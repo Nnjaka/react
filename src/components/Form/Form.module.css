@@ -1,0 +1,26 @@
+.conteiner {
+    width: 1140px;
+    margin: 0 auto;
+    background-color: darkgrey;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.form {
+    margin: 30px 0px;
+}
+
+.input-field {
+    width: 300px;
+    height: 20px;
+    border-radius: 3px;
+    border: aliceblue;
+    
+}
+
+.name {
+    margin: 50px 50px 0px;
+    font-size: 20px;
+    text-align: left;
+}
