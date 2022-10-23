@@ -25,6 +25,7 @@ export const MessageForm = ({setMessages, setAuthorName}) => {
                         onChange = {(e) => {
                             setAuthor(e.target.value)
                         }}
+                        autoFocus
                     />
                     <TextField 
                         id="outlined-basic" 
