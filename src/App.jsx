@@ -1,89 +1,78 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { Messages } from './components/Message/Messages';
-import { MessageForm } from './components/Message/MessageForm';
-import { createTheme, ThemeProvider } from '@mui/material';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 
-export const App = () => {
-  const darkTheme = createTheme({
-    palette:{
-      mode: 'light',
-      primary: {
-        main: '#0052cc',
-      },
-      secondary: {
-        main: '#edf2ff',
-      },
-      text:{
-        primary: '#E8F3F9',
-      }
-    }
-  })
+// import style from './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { Main } from './pages/Main';
+import { Profile } from './pages/Profile';
+import { ChatList } from './components/ChatList';
+import { useState } from 'react';
+import { ChatPage } from './pages/ChatPage';
+import { Header } from './components/Header/Header';
 
-  const lightTheme = createTheme({
-    palette:{
-      mode: 'light',
-    }
-  })
-
-  const [messages=[], setMessages] = useState([]);
-  const [authorName, setAuthorName] = useState('');
-  const [robotMessage, setRobotMessage] = useState('');
-  const [isDark, setIsDark] = useState(false);
-
-  const chats = [{
-    id: 1,
-    name: "Name1"
+const defaultChats = [
+  {
+    id: '1',
+    name: 'first',
   },
   {
-    id: 2,
-    name: "Name2"
-  }]
+    id: '2',
+    name: 'second',
+  }
+]
 
-  useEffect(() => {
-    if(authorName !== ''){
-      setTimeout(() => setRobotMessage(() => <Alert severity="success">{authorName} сообщение отправлено</Alert>), 1500);
-    }
-  }, [authorName]) 
+const defaultMessages = {
+  '1': [{author: 'author1', text: 'text1'}],
+  '2': [{author: 'author2', text: 'text2'}],
+}
+
+export const App = () => {
+  const [chats, setChats] = useState(defaultChats);
+  const [messages, setMessages] = useState(defaultMessages);
+
+  const addChat = (newChat) => {
+    setChats([
+      ...chats, newChat
+    ])
+    setMessages({
+      ...messages, [newChat.id]: [],
+    });
+  };
+
+  const addMessage = (chatId, newMessage) => {
+    setMessages({
+      ...messages,
+      [chatId]: [...messages[chatId], newMessage],
+    });
+  };
+
+  const deleteChat = (chatId) => {
+    const needChats = chats.filter((elem) => elem.id !== chatId);
+    delete messages[chatId];
+    setChats([...needChats]);
+    setMessages({ ...messages });
+  }
 
   return (
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <Box className="App">
-        <Container>
-              <Button className="theme" variant='primary' onClick={() => {setIsDark(pervstate => !pervstate)}} style={{ margin: 20 }}>Изменить тему</Button>
-              <h1>Чат</h1>
-              <div>{robotMessage}</div>
-              <div className="content">
-                <List dense sx={{ width: '100%', maxWidth: 250, bgcolor: 'background.paper' }} chats={chats}>
-                  {chats.map((value, key) => {
-                  const labelId = `checkbox-list-secondary-label-${value.id}`;
-                  return (
-                    <ListItem
-                      key={key}
-                      disablePadding
-                    >
-                      <ListItemButton>
-                        <ListItemText id={labelId} primary={value.name} />
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                  })}
-                </List>
-                <MessageForm setMessages={setMessages} setAuthorName ={setAuthorName}/>
-              </div>
-              <div>
-                <Messages messages={messages}/>
-              </div>
-          </Container>
-      </Box>
-    </ThemeProvider>
+    <Routes>
+    <Route path="/" element={<Header />}>
+      <Route index element={<Main />} />
+      <Route path="profile" element={<Profile />} />
+      <Route path="chats">
+        <Route index element={<ChatList chats={chats} addChat={addChat} deleteChat={deleteChat}/>}/>
+        <Route
+          path=":chatId"
+          element={
+            <ChatPage
+              chats={chats}
+              addChat={addChat}
+              messages={messages}
+              addMessage={addMessage}
+              deleteChat={deleteChat}
+            />
+          }
+        />
+      </Route>
+    </Route>
+    <Route path="*" element={<div>404 page</div>} />
+  </Routes>
   );
 }

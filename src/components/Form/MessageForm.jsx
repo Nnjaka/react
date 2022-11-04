@@ -1,21 +1,33 @@
 import style from './MessageForm.module.css'
-import React, { useState } from 'react';
+import { React, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send.js';
-import { useTheme } from '@emotion/react';
+import { useParams } from "react-router-dom";
 
-export const MessageForm = ({setMessages, setAuthorName}) => {
-    const theme = useTheme();
+export const MessageForm = ({addMessage}) => {
 
     const [author, setAuthor] = useState("");
     const [text, setText] = useState("");
+
+    const { chatId } = useParams();
+
+    const handleAddMessage = () => {
+        if(chatId) {
+            addMessage(chatId, {
+                text: text,
+                author: author
+            });
+        }
+        setAuthor('');
+        setText('');
+    }
   
 
-        return (
-            <div className={style.conteiner} style={{background:theme.palette.primary.main}}>
+        return (    
+            <div className={style.conteiner} >
                 <h4 className={style.header}>Введите имя и текст сообщения</h4>
-                <form className={style.form}>
+                <form className={style.form} >
                     <TextField 
                         id="outlined-basic" 
                         label="Имя" 
@@ -40,15 +52,11 @@ export const MessageForm = ({setMessages, setAuthorName}) => {
                         variant="contained" 
                         endIcon={<SendIcon />}
                         onClick={() => {
-                            setMessages((pervstate) => [...pervstate, {
-                                text: text,
-                                author: author
-                            },])
-                            setAuthorName((author))
+                            handleAddMessage();
                         }}
                         className={style.button}
                     > Отправить</Button>
                 </form>
             </div>
-        )
+        );
 }

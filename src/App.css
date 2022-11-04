@@ -1,14 +1,12 @@
 .App {
   text-align: center;
+  display: block;
 }
 
-.content {
-  display: flex;
-  justify-content: flex-start;
+.conteiner {
+  width: 50px;
 }
 
-.theme {
-  float: right;
-}
+
 
 
