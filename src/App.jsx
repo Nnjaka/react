@@ -7,6 +7,8 @@ import { ChatList } from './components/ChatList';
 import { useState } from 'react';
 import { ChatPage } from './pages/ChatPage';
 import { Header } from './components/Header/Header';
+import { Provider } from 'react-redux';
+import { store } from './store/index';
 
 const defaultChats = [
   {
@@ -52,6 +54,7 @@ export const App = () => {
   }
 
   return (
+    <Provider store={store}>
     <Routes>
     <Route path="/" element={<Header />}>
       <Route index element={<Main />} />
@@ -74,5 +77,6 @@ export const App = () => {
     </Route>
     <Route path="*" element={<div>404 page</div>} />
   </Routes>
+  </Provider>
   );
 }
