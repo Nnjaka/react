@@ -4,20 +4,23 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send.js';
 import { useParams } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { addMessage } from '../../store/messages/actions';
 
-export const MessageForm = ({addMessage}) => {
+export const MessageForm = () => {
 
     const [author, setAuthor] = useState("");
     const [text, setText] = useState("");
-
-    const { chatId } = useParams();
+    const { chatName } = useParams();
+    const dispatch = useDispatch();
 
     const handleAddMessage = () => {
-        if(chatId) {
-            addMessage(chatId, {
-                text: text,
-                author: author
-            });
+        if(chatName) {
+            dispatch(
+                addMessage(chatName, {
+                    text: text,
+                    author: author
+            }));
         }
         setAuthor('');
         setText('');

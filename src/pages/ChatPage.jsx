@@ -5,21 +5,25 @@ import { MessageForm } from "../components/Form/MessageForm"
 import { Navigate, useParams } from "react-router-dom"
 import Alert from '@mui/material/Alert';
 import style from './ChatPage.module.css';
+import { useSelector } from 'react-redux';
+import { selectMessages } from '../store/messages/selectors';
 
-export const ChatPage = ({ chats, addChat, messages, addMessage, deleteChat }) => {
+export const ChatPage = () => {
     const [robotMessage, setRobotMessage] = useState('');
 
-    const {chatId} = useParams();
- 
+    const {chatName} = useParams();
+    const messages = useSelector(selectMessages);
+
     useEffect(() => {
-        if(chatId && messages[chatId]?.length){
-            const time = setTimeout(() => setRobotMessage(() => <Alert severity="success">{messages[chatId][messages[chatId].length-1].author} сообщение отправлено</Alert>), 1500);
+        if(chatName && messages[chatName]?.length){
+            const time = setTimeout(() => setRobotMessage(() => 
+                <Alert severity="success">{messages[chatName][messages[chatName].length-1].author} сообщение отправлено</Alert>), 1500);
 
             return() => clearTimeout(time);
         }
-    }, [chatId, messages, addMessage])
+    }, [chatName, messages])
 
-    if(chatId && !messages[chatId]){
+    if(chatName && !messages[chatName]){
         return <Navigate to='/chats' replace/>
     }
 
@@ -28,11 +32,11 @@ export const ChatPage = ({ chats, addChat, messages, addMessage, deleteChat }) =
             <div>{robotMessage}</div>
             <div className={style.content}>
                 <div className={style.chats}>
-                    <ChatList chats={chats} addChat={addChat} deleteChat={deleteChat}/>
+                    <ChatList />
                 </div>
                 <div className={style.messages}>
-                    <Messages messages={chatId ? messages[chatId] : []} />
-                    <MessageForm addMessage={addMessage}/>
+                    <Messages messages={chatName ? messages[chatName] : []} />
+                    <MessageForm />
                 </div>
             </div>
         </>

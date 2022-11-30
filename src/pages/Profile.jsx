@@ -9,19 +9,15 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import { selectName, selectVisible } from "../store/profile/selectors";
 
 export const Profile = () => {
     const dispatch = useDispatch();
 
-    const name = useSelector((state) => state.name);
-    const visible = useSelector((state) => state.visible);
+    const name = useSelector(selectName);
+    const visible = useSelector(selectVisible);
     const [firstName, setFirstName] = useState('');
-
-    function stringAvatar(name) {
-        return {
-          children: `${name[0]}`,
-        };
-      }
+    console.log(name);
 
     return(
         <div className={style.conteiner}>
@@ -30,7 +26,7 @@ export const Profile = () => {
             <div className={style.orangeLine}></div>
 
             <Stack direction="row" spacing={2} className={style.avatarBlock}>
-                <Avatar {...stringAvatar(name)} />
+                <Avatar>{name}</Avatar>
                 <p className={style.name}>{name}</p>
             </Stack>
 
