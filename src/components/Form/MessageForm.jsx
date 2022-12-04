@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send.js';
 import { useParams } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { addMessage } from '../../store/messages/actions';
+import { addMessageWithReply } from '../../store/messages/slice';
 
 export const MessageForm = () => {
 
@@ -17,10 +17,14 @@ export const MessageForm = () => {
     const handleAddMessage = () => {
         if(chatName) {
             dispatch(
-                addMessage(chatName, {
-                    text: text,
-                    author: author
-            }));
+                addMessageWithReply({
+                    chatName: chatName,
+                    message: {
+                        text: text,
+                        author: author
+                    }
+                }
+            ));
         }
         setAuthor('');
         setText('');

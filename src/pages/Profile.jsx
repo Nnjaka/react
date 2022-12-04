@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { changeName, toggleProfile } from "../store/profile/actions";
 import style from './Profile.module.css';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,6 +9,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { selectName, selectVisible } from "../store/profile/selectors";
+import { toggleProfile, changeName } from "../store/profile/slice";
 
 export const Profile = () => {
     const dispatch = useDispatch();

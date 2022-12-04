@@ -1,13 +1,40 @@
-import { createStore, compose, combineReducers } from 'redux';
-import { messagesReducer } from './messages/reducer';
-import { profileReducer } from './profile/reducer';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import { messagesReducer } from './messages/slice';
+import { profileReducer } from './profile/slice';
+import storage from 'redux-persist/lib/storage';
 
-export const composeEnhancers =
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: [],
+};
 
 const rootReducer = combineReducers({
   profile: profileReducer,
-  messages: messagesReducer
-})
+  messages: messagesReducer,
+});
 
-export const store = createStore(rootReducer, composeEnhancers());
+const persisredReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persisredReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+  devTools: process.env.NODE_ENV !== 'production',
+});
+
+export const persistor = persistStore(store);
