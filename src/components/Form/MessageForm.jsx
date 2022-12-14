@@ -4,27 +4,30 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send.js';
 import { useParams } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { addMessageWithReply } from '../../store/messages/slice';
+import { push, ref } from 'firebase/database';
+import { db } from '../../services/firebase';
 
 export const MessageForm = () => {
 
     const [author, setAuthor] = useState("");
     const [text, setText] = useState("");
     const { chatName } = useParams();
-    const dispatch = useDispatch();
 
     const handleAddMessage = () => {
         if(chatName) {
-            dispatch(
-                addMessageWithReply({
-                    chatName: chatName,
-                    message: {
-                        text: text,
-                        author: author
-                    }
-                }
-            ));
+            // dispatch(
+            //     addMessageWithReply({
+            //         chatName: chatName,
+            //         message: {
+            //             text: text,
+            //             author: author
+            //         }
+            //     }
+            // ));
+            push(ref(db, `messages/${chatName}/messages`), {
+                text: text,
+                author: author
+            });
         }
         setAuthor('');
         setText('');

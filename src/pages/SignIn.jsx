@@ -1,42 +1,50 @@
 // import { Button } from "@mui/material";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../store/profile/slice";
 import style from './SignIn.module.css';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { logIn } from "../services/firebase";
+import { CircularProgress } from "@mui/material";
 
 
 
 export const SignIn = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setError(false);
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      setError('');
+      setLoading(true);
+  
 
-        if (login === 'gb' && password === 'gb'){
-            dispatch(auth(true));
-            navigate(-1);
+      try {
+        await logIn(login, password);
+        navigate('/chats');
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
         } else {
-            setError(true);
-            setLogin('');
-            setPassword('');
+          setError('error');
         }
-    }
+      } finally {
+        setLoading(false);
+      }
+    };
 
     return(
         <>
-        {error && <Alert severity="error">Неверный логин или пароль</Alert>}
+        {loading && <CircularProgress />}
+        {error && <Alert severity="error">{error}</Alert>}
         <div className={style.form}>
-            <h2>Sigh Up</h2>
+            <h2>Sigh In</h2>
             <form onSubmit={handleSubmit} className={style.form} noValidate>
                 <TextField
                     variant="outlined"
@@ -45,6 +53,7 @@ export const SignIn = () => {
                     fullWidth
                     id="email"
                     label="Email Address"
+                    type="email"
                     name="email"
                     autoComplete="email"
                     autoFocus

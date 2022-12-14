@@ -7,26 +7,40 @@ import style from './ChatList.module.css';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { useDispatch, useSelector } from "react-redux";
-import { addChat, deleteChat } from "../../store/messages/slice";
-import { selectChats } from "../../store/messages/selectors";
+// import { useSelector } from "react-redux";
+// import { selectChats } from "../../store/messages/selectors";
+import { ref, set, remove } from "firebase/database";
+import { db } from "../../services/firebase";
+import { nanoid } from "nanoid";
 
-export const ChatList = () => {
+export const ChatList = ({chats}) => {
     const [value, setValue] = useState('');
-    const dispatch = useDispatch();
 
-    const chats = useSelector(
-        selectChats,
-        (prev, next) => prev.length === next.length
-        );
+    // const chats = useSelector(
+    //     selectChats,
+    //     (prev, next) => prev.length === next.length
+    //     );
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if(value) {
-            dispatch(addChat(value));
-            setValue('');
+            set(ref(db, `chats/${value}`), {
+                id: nanoid(), 
+                name: value,
+            });
+
+            set(ref(db, `messages/${value}`), {
+                id: nanoid(), 
+                name: value,
+            });
         }
+    }
+
+    const handleDelete = (chatName) => {
+        remove(ref(db, `chats/${chatName}`), {
+            name: value,
+        });
     }
 
     return(
@@ -35,7 +49,7 @@ export const ChatList = () => {
                 {chats.map((chat) => 
                     <ListItem key={chat.id}>
                         <Link to={`/chats/${chat.name}`}>{chat.name}</Link>
-                        <IconButton aria-label="delete" size="small" onClick={() => dispatch(deleteChat(chat.name))}>
+                        <IconButton aria-label="delete" size="small" onClick={() => handleDelete(chat.name)}>
                             <DeleteIcon fontSize="inherit" />
                         </IconButton>
                     </ListItem>

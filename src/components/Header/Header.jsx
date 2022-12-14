@@ -5,6 +5,7 @@ import MenuList from '@mui/material/MenuList';
 import { useDispatch, useSelector } from 'react-redux';
 import { auth } from './../../store/profile/slice';
 import { Button } from '@mui/material';
+import { logOut } from '../../services/firebase';
 
 const nav = [
   {
@@ -30,12 +31,14 @@ export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(auth(false));
-  }
-
-  const handleLogin = () => {
-    navigate('/signin');
+  const handleLogout = async () => {
+    try {
+      await logOut();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(auth(false));
+    }
   }
 
   return (
@@ -58,8 +61,13 @@ export const Header = () => {
       </Paper>
       <main>
         <div style={{float: "right"}}>
-          {isAuth ? (<Button onClick={handleLogout}>Logout</Button>) :
-          (!isAuth && (<Button onClick={handleLogin}>Login</Button>))}
+          {isAuth ? 
+            (<Button onClick={handleLogout}>Logout</Button>) :
+            <>
+              <Button onClick={() => navigate('/signIn')}>Login</Button>
+              <Button onClick={() => navigate('/signUp')}>Sing Up</Button>
+            </>
+           }
         </div>
         <Outlet />
       </main>
