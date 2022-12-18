@@ -15,15 +15,6 @@ export const MessageForm = () => {
 
     const handleAddMessage = () => {
         if(chatName) {
-            // dispatch(
-            //     addMessageWithReply({
-            //         chatName: chatName,
-            //         message: {
-            //             text: text,
-            //             author: author
-            //         }
-            //     }
-            // ));
             push(ref(db, `messages/${chatName}/messages`), {
                 text: text,
                 author: author

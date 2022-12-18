@@ -20,35 +20,6 @@ export const Articles = () => {
     useEffect(() => {
         handleFetchData();
       }, [handleFetchData]);
-    
-      
-
-
-    // const [loading, setLoading] = useState(false);
-    // const [error, setError] = useState('');
-    // const [articles, setArticles] = useState([]);
-
-    // const getArticles = async () => {
-    //     setLoading(true);
-    //     setError('');
-    //     setArticles([]);
-
-    //     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    //     try {
-    //         const response = await fetch(`${api}/v3/articles`);
-    //         const data = await response.json();
-    //         setArticles(data);
-    //     } catch (error) {
-    //         if (error instanceof Error) {
-    //             setError(error.message);
-    //         } else {
-    //             setError('Error');
-    //         }
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
 
     return (
     <>
